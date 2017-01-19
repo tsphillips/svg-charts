@@ -1,0 +1,19 @@
+= README
+Thomas Phillips <tom@tsphillips.net>
+
+Very simple pie chart for SVG.
+
+== About
+
+This is a bare-bones pie chart function for SVG image elements in web pages.
+I built something (more elaborate) for another project and wanted to release the essence of the pie chart into the world.
+The core code here is simple, elegant, and provides a convenient way to render arcs in SVG.
+
+I do not know if I will ever maintain this code beyond what is seen here.
+
+_Caveat utilitor_.
+
+== Copyright
+
+Copyright (c)2017 Thomas Phillips.
+The code is released under the MIT license.
