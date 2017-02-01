@@ -17,8 +17,9 @@ args:
 */
 var SvgPieChart = function(args) {
     this.svg = document.getElementById(args.id);
-    this.cx = this.svg.getBBox().width / 2;
-    this.cy = this.svg.getBBox().height / 2;
+    this.viewBox = this.svg.viewBox;
+    this.cx = this.viewBox.baseVal.width / 2;
+    this.cy = this.viewBox.baseVal.height / 2;
     this.r = (this.cx < this.cy) ? this.cx : this.cy;
     this.arcR = 0.8;
     this.labelR = 0.9;
