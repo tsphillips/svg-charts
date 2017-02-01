@@ -11,7 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 /**
 args:
     id   := id of SVG element
-    data := [ {label: <label>, percent: <percent>, color: <color>} ... ]
+    data := [ {label: <label>, value: <percent>, color: <color>} ... ]
         Required fields: label, percent
         Optional fields: color
 */
@@ -28,10 +28,10 @@ var SvgPieChart = function(args) {
     // Fallback to random data.
     if (typeof this.data === "undefined") {
         this.data = [
-            {label: "Hydroelectric", percent: .177, color: "black"},
-            {label: "Biomass", percent: .393, color: "black"},
-            {label: "Wind", percent: .369, color: "black"},
-            {label: "solar", percent: .061, color: "black"}
+            {label: "Hydroelectric", value: .177, color: "black"},
+            {label: "Biomass", value: .393, color: "black"},
+            {label: "Wind", value: .369, color: "black"},
+            {label: "solar", value: .061, color: "black"}
         ];
     } // if
 
@@ -119,7 +119,7 @@ var SvgPieChart = function(args) {
     var t1 = 0;
     var t2 = 0;
     for (var i = 0; i < this.data.length; i++) {
-        t2 = t1 + (360 * this.data[i].percent);
+        t2 = t1 + (360 * this.data[i].value);
         var arc = svgArcPath(
             this.cx, this.cy,
             this.r * this.arcR,
@@ -140,7 +140,7 @@ var SvgPieChart = function(args) {
             this.r * this.labelR,
             t1 * (Math.PI/180),
             t2 * (Math.PI/180),
-            "" + (Math.floor(this.data[i].percent * 1000)/10) + "%"
+            "" + (Math.floor(this.data[i].value * 1000)/10) + "%"
         );
         this.svg.appendChild(label2);
         t1 = t2;

@@ -17,11 +17,13 @@ args:
 */
 var SvgBarChart = function(args) {
     this.svg = document.getElementById(args.id);
-    this.cx = this.svg.getBBox().width / 2;
-    this.cy = this.svg.getBBox().height / 2;
-    this.r = (this.cx < this.cy) ? this.cx : this.cy;
-    this.arcR = 0.8;
-    this.labelR = 0.9;
+    this.viewBox = this.svg.viewBox;
+    this.width = this.viewBox.baseVal.width;
+    this.height = this.viewBox.baseVal.height;
+    this.xOffset = this.width * 0.05;
+    this.maxWidth = this.width - (this.xOffset * 2);
+    this.yOffset = this.height * 0.05;
+    this.maxHeight = this.height - (this.yOffset * 2);
     this.data = args.data;
 
     // Fallback to random data.
@@ -63,86 +65,54 @@ var SvgBarChart = function(args) {
         };
     } // p2c
 
-    /**
-    Returns a pie chart wedge in the form of a DOM node to be appended to an SVG element.
-    cx := center x
-    cy := center y
-    r  := radius
-    t1 := start theta (in degrees)
-    t2 := end theta (in degrees)
-
-    0 degrees is directly to the right.
-    90 degrees is straight up.
-    */
-    function svgArcPath(cx, cy, r, t1, t2) {
-        var p;
-        var path = "";
-        var arc = document.createElementNS("http://www.w3.org/2000/svg", 'path');
-        path += "M " + cx + " " + cy + " ";
-        p = p2c(r, t1);
-        path += "L " + (cx + p.x) + " " + (cy + p.y) + " ";
-        p = p2c(r, t2);
-        path += "A " + r + " " + r + " 0 0 0 " + (cx + p.x) + " " + (cy + p.y);
-        path += "L " + cx + " " + cy + " ";
-        arc.setAttribute("d", path);
-        arc.setAttribute("stroke", "black");
-        arc.setAttribute("fill", randomColor());
-        return arc;
-    } // svgArcPath()
+    function svgBarPath(x, y, width, height) {
+        var bar = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
+        bar.setAttribute("x", x);
+        bar.setAttribute("y", y);
+        bar.setAttribute("width", width);
+        bar.setAttribute("height", height);
+        bar.setAttribute("stroke", "black");
+        bar.setAttribute("fill", randomColor());
+        return bar;
+    } // svgBarPath()
 
     /**
-    Returns a pie chart label in the form of a DOM node to be appended to an SVG element.
-    cx   := center x
-    cy   := center y
-    r    := radius
-    t1   := start theta (in degrees)
-    t2   := end theta (in degrees)
+    Returns a chart label in the form of a DOM node to be appended to an SVG element.
+    x   := x
+    y   := y
     text := text of the label
-
-    0 degrees is directly to the right.
-    90 degrees is straight up.
     */
-    function svgArcLabel(cx, cy, r, t1, t2, text) {
-        var p;
-        p = p2c(r, (t1 + t2) / 2);
+    function svgBarLabel(x, y, width, height, text) {
         var label = document.createElementNS("http://www.w3.org/2000/svg", 'text');
         label.innerHTML = text;
-        label.setAttribute("text-anchor", "middle");
-        label.setAttribute("x", cx + p.x);
-        label.setAttribute("y", cy + p.y);
+        label.setAttribute("alignment-baseline", "middle");
+        label.setAttribute("x", x);
+        label.setAttribute("y", y + (height / 2));
         label.setAttribute("stroke", "black");
         label.setAttribute("fill", "black");
         return label;
-    } // svgArcLabel()
+    } // svgBarLabel()
 
-    var t1 = 0;
-    var t2 = 0;
+    // Find max value
+    this.maxValue = 0;
     for (var i = 0; i < this.data.length; i++) {
-        t2 = t1 + (360 * this.data[i].percent);
-        var arc = svgArcPath(
-            this.cx, this.cy,
-            this.r * this.arcR,
-            t1 * (Math.PI/180),
-            t2 * (Math.PI/180)
-        );
-        this.svg.appendChild(arc);
-        var label1 = svgArcLabel(
-            this.cx, this.cy,
-            this.r * this.labelR,
-            t1 * (Math.PI/180),
-            t2 * (Math.PI/180),
-            this.data[i].label
-        );
-        this.svg.appendChild(label1);
-        var label2 = svgArcLabel(
-            this.cx, this.cy + (label1.getBBox().height),
-            this.r * this.labelR,
-            t1 * (Math.PI/180),
-            t2 * (Math.PI/180),
-            "" + (Math.floor(this.data[i].percent * 1000)/10) + "%"
-        );
-        this.svg.appendChild(label2);
-        t1 = t2;
+        if (this.data[i].value > this.maxValue) {
+            this.maxValue = this.data[i].value;
+        } // if
+    } // for i
+
+    for (var i = 0; i < this.data.length; i++) {
+        var barHeight = this.maxHeight / this.data.length;
+        var x = this.xOffset;
+        var y = this.yOffset + (i * barHeight);
+        var width = (this.data[i].value / this.maxValue) * this.maxWidth;
+        var height = barHeight;
+
+        var bar = svgBarPath(x, y, width, height);
+        this.svg.appendChild(bar);
+        var label = svgBarLabel(x + (this.maxWidth * 0.01), y, width, height,
+            this.data[i].label + " (" + this.data[i].value + ")");
+        this.svg.appendChild(label);
     } // for i
 
 } // class SvgBarChart
