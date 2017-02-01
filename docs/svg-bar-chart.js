@@ -20,21 +20,11 @@ var SvgBarChart = function(args) {
     this.viewBox = this.svg.viewBox;
     this.width = this.viewBox.baseVal.width;
     this.height = this.viewBox.baseVal.height;
-    this.xOffset = this.width * 0.05;
+    this.xOffset = this.width * 0.02;
     this.maxWidth = this.width - (this.xOffset * 2);
-    this.yOffset = this.height * 0.05;
+    this.yOffset = this.height * 0.02;
     this.maxHeight = this.height - (this.yOffset * 2);
     this.data = args.data;
-
-    // Fallback to random data.
-    if (typeof this.data === "undefined") {
-        this.data = [
-            {label: "Hydroelectric", percent: .177, color: "black"},
-            {label: "Biomass", percent: .393, color: "black"},
-            {label: "Wind", percent: .369, color: "black"},
-            {label: "solar", percent: .061, color: "black"}
-        ];
-    } // if
 
     // Derived from http://stackoverflow.com/questions/1484506/random-color-generator-in-javascript#1484514
     function randomColor() {
@@ -46,24 +36,6 @@ var SvgBarChart = function(args) {
         }
         return color;
     } // randomColor
-
-    /**
-    Polar to cartesian coordinates.
-    r      := radius
-    theta  := theta (counterclockwise rotation)
-    Returns a point structure, {x:<value>, y:<value>}
-
-    NOTE: y down is positive, y up is negative, for happy computer graphics
-
-    0 degrees is directly to the right.
-    90 degrees is straight up.
-    */
-    function p2c(r, theta) {
-        return {
-            x: r * Math.cos(theta),
-            y: -1 * r * Math.sin(theta)
-        };
-    } // p2c
 
     function svgBarPath(x, y, width, height) {
         var bar = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
@@ -86,6 +58,7 @@ var SvgBarChart = function(args) {
         var label = document.createElementNS("http://www.w3.org/2000/svg", 'text');
         label.innerHTML = text;
         label.setAttribute("alignment-baseline", "middle");
+        label.setAttribute("font-size", "" + height + "px");
         label.setAttribute("x", x);
         label.setAttribute("y", y + (height / 2));
         label.setAttribute("stroke", "black");

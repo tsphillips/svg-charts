@@ -31,8 +31,9 @@
     <hr>
     <h2>Bar Chart</h2>
     <svg id="chart-bar"
+        style="width: 800px; height: 500px;"
         class="center"
-        viewBox="0 0 499 499"
+        viewBox="0 0 799 499"
         version="1.1">
     </svg>
 
@@ -46,14 +47,16 @@
             {label: "Solar", value: .061, color: "black"}
         ]
     });
+    var data = [];
+    for (var i = 1; i <= 31; i++) {
+        data.push({
+            label: "January " + i + ", 2017",
+            value: Math.floor(Math.random() * 1024)
+        });
+    } // for i
     var barChart = new SvgBarChart({
         id:"chart-bar",
-        data: [
-            {label: "Hydroelectric", value: .177, color: "black"},
-            {label: "Biomass", value: .393, color: "black"},
-            {label: "Wind", value: .369, color: "black"},
-            {label: "Solar", value: .061, color: "black"}
-        ]
+        data: data
     });
     </script>
 
