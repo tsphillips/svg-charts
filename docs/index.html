@@ -19,29 +19,33 @@
     }
     </style>
     <script src="svg-pie-chart.js"></script>
+    <script src="svg-bar-chart.js"></script>
 </head>
 <body>
-    <svg id="chart-1"
+    <svg id="chart-pie"
         class="center"
         viewBox="0 0 499 499"
         version="1.1">
-        <!-- draw a frame -->
-        <path
-            stroke="black"
-            stroke-width="5px"
-            fill="none"
-            d="
-            M 0 0
-            L 499 0
-            L 499 499
-            L 0 499
-            L 0 0
-            "/>
+    </svg>
+
+    <svg id="chart-bar"
+        class="center"
+        viewBox="0 0 499 499"
+        version="1.1">
     </svg>
 
     <script>
     var pieChart = new SvgPieChart({
-        id:"chart-1",
+        id:"chart-pie",
+        data: [
+            {label: "Hydroelectric", percent: .177, color: "black"},
+            {label: "Biomass", percent: .393, color: "black"},
+            {label: "Wind", percent: .369, color: "black"},
+            {label: "solar", percent: .061, color: "black"}
+        ]
+    });
+    var barChart = new SvgPieChart({
+        id:"chart-bar",
         data: [
             {label: "Hydroelectric", percent: .177, color: "black"},
             {label: "Biomass", percent: .393, color: "black"},
